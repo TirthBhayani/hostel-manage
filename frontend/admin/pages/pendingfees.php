@@ -17,30 +17,10 @@ include '../../../backend/adminpendingfees.php';
 </head>
 
 <body>
-    <div class="sidebar">
-        <ul class="menu">
-            <li><a href="hostelfees.php">Hostel Fees</a></li>
-            <li><a href="maintainance.php">Maintenance Issue</a></li>
-            <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
-            <li><a href="latestudent.php">Late student History</a></li>
-            <li><a href="room.php">Room Allocation</a></li>
-            <li><a href="roomhistory.php">Room record</a></li>
-            <li><a href="pendingfees.php">Pending fees Students</a></li>
-        </ul>
-    </div>
+<?php include 'admin_sidebar.php'; ?>
 
     <div class="content">
-        <div class="top-bar">
-            <h1><a href="dashboard.php">SDHOSTEL</a></h1>
-            <div class="user">
-                
-                <!-- Fixed the missing quote in the src attribute -->
-                <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
-                <div id="dropdown-menu" class="dropdown">
-                    <a href="logout.php">Logout</a>
-                </div>
-            </div>
-        </div>
+    <?php include 'admin_topbar.php'; ?>
         <div class="main-content">
            
         <h1>Pending fees Students</h1>

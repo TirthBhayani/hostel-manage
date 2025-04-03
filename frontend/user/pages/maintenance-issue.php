@@ -5,54 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maintenance Issue</title>
     <link rel="stylesheet" href="../CSS/dashboard.css">
-    <link rel="stylesheet" href="../CSS/maintenace-issue.css">
-
-    <style>
-        /* Textarea styling */
-       
-    </style>
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
-        }
-
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(event) {
-            if (!event.target.matches('.user img')) {
-                var dropdowns = document.getElementsByClassName("dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- <link rel="stylesheet" href="../CSS/maintenace-issue.css"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="../javascript/script.js"></script>
+    
 </head>
 <body>
     <?php 
-    session_start(); // Start the session
+    session_start(); 
     include 'sidebar.php'; 
     ?>
     <div class="content">
-        <div class="top-bar">
-
-            <h1>Maintenance Issue</h1>
-            <div class="user">
-                <!-- Profile image that triggers the dropdown -->
-                <img src="photos/Gpay.png" alt="Profile" onclick="toggleDropdown()">
-                <!-- Dropdown menu for logout -->
-                <div id="dropdown" class="dropdown">
-                    <a href="logout.php">Logout</a>
+        <?php include 'topbar.php';?>
+        <div class="container mt-4">
+            <h2>Describe the Maintenance Issue</h2>
+            <form action="../../../backend/user/submit_issue.php" method="post" enctype="multipart/form-data" class="mt-3">
+                
+                <!-- Dropdown for Maintenance Issue Type -->
+                <div class="form-group">
+                    <label for="issue_type">Select Issue Type:</label>
+                    <select id="issue_type" name="issue_type" class="form-control" required>
+                        <option value="">-- Select Issue --</option>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
-            </div>
-        </div>
-        <div class="main-content">
-            <h2>Describe the maintenance issue:</h2>
-            <form action="../../../backend/user/submit_issue.php" method="post">
-                <textarea id="issue" name="issue" rows="10" required></textarea>
-                <input type="submit" value="Submit Issue">
+                
+                <!-- Textarea for Issue Description -->
+                <div class="form-group">
+                    <label for="issue">Describe the Issue:</label>
+                    <textarea id="issue" name="issue" rows="5" class="form-control" required></textarea>
+                </div>
+                
+                <!-- File Upload for Image (Optional) -->
+                <div class="form-group">
+                    <label for="issue_image">Upload Image (Optional):</label>
+                    <input type="file" id="issue_image" name="issue_image" class="form-control-file">
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Submit Issue</button>
             </form>
         </div>
     </div>

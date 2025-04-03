@@ -11,36 +11,34 @@ $password = "";
 $dbname = "hostel-manage";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-
+// $otr = $_SESSION['otr_number'];
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== 1 || $_SESSION['role'] !== 'admin') {
+    header('Location: ../../../frontend/user/pages/login.php');
+    exit();
+}
+// $otr = $_SESSION['otr_number'];
 function generatePDFReceipt($receiptData) {
     global $conn;
-
+    $otr = $_SESSION['otr_number'];
     // Ensure the receipts folder exists inside uploads directory
     if (!file_exists('../../../uploads/receipts/')) {
         mkdir('../../../uploads/receipts/', 0777, true);
     }
-    $otr = $_SESSION['otr_number'];
-
-    // Generate the PDF
+   
     $pdf = new tFPDF();
     $pdf->AddPage();
-    $pdf->Image('../../../photos/logo.png',10,10,20);
-    // Add Header
-    $pdf->Image('../../../photos/sd.png', 60, 7, 100);
-    $pdf->Image('../../../photos/statue.png', 180, 10, 10);
+    // $pdf->Image('../../../photos/logo.png',10,10,20);
+    // $pdf->Image('../../../photos/sd.png', 60, 7, 100);
+    // $pdf->Image('../../../photos/statue.png', 180, 10, 10);
     $pdf->AddFont('NotoSansGujarati', '', 'NotoSansGujarati.ttf', true);
     $pdf->SetFont('NotoSansGujarati', '', 14, true);
     $pdf->Ln(10);
 
-    $pdf->Cell(0, 10, 'સરદાર પટેલ છાત્રાલય', 0, 1, 'C');
-    $pdf->Ln(10);
-
-    // Add Receipt Details
     $pdf->SetFont('Arial', '', 12);
     $pdf->Cell(50, 10, 'Registration ID:', 0, 0,'C');
     $pdf->Cell(50, 10, $receiptData['registration_id'], 0, 1,'C');
@@ -63,21 +61,21 @@ function generatePDFReceipt($receiptData) {
 
     // Add Fee Breakdown
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(10, 10, 'Sr.No.', 1, 0, 'R');
+    $pdf->Cell(15, 10, 'Sr.No.', 1, 0, 'R');
     $pdf->Cell(80, 10, 'Description', 1, 0, 'C');
     $pdf->Cell(30, 10, 'HSN/SAC', 1, 0, 'C');
     $pdf->Cell(30, 10, 'Amount', 1, 1, 'C');
 
     $pdf->SetFont('Arial', '', 10);
     foreach ($receiptData['fee_breakdown'] as $index => $fee) {
-        $pdf->Cell(10, 10, $index + 1, 1, 0, 'C');
+        $pdf->Cell(15, 10, $index + 1, 1, 0, 'C');
         $pdf->Cell(80, 10, $fee['description'], 1, 0,'C');
         $pdf->Cell(30, 10, $fee['hsn_sac'], 1, 0, 'C');
         $pdf->Cell(30, 10, number_format($fee['amount'], 2), 1, 1, 'R');
     }
 
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(120, 10, 'Total Amount', 1, 0, 'R');
+    $pdf->Cell(125, 10, 'Total Amount', 1, 0, 'R');
     $pdf->Cell(30, 10, number_format($receiptData['total_amount'], 2), 1, 1, 'R');
     $pdf->Ln(10);
 
@@ -102,6 +100,8 @@ function generatePDFReceipt($receiptData) {
     $stmt->bind_param("si", $receipt_path, $receiptData['id']);
     $stmt->execute();
     $stmt->close();
+ 
+
 }
 
 // Handle approval or rejection
@@ -113,6 +113,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['action'])) {
         $stmt = $conn->prepare("UPDATE receipts SET status = 'approved' WHERE id = ?");
         $stmt->bind_param("i", $receipt_id);
         $stmt->execute();
+        
+       $stmt2 = $conn->prepare("UPDATE fees SET status = 'paid' WHERE otr_number = ?");
+        $stmt2->bind_param("s", $otr);
+
+     // Use "s" if otr_number is a string
+        $stmt2->execute();
+        $stmt2->close();
 
         // Fetch receipt data
         $receipt_query = $conn->prepare("SELECT r.otr_number, r.upi_id, r.transaction_id, r.amount, u.firstName FROM receipts r INNER JOIN users u ON r.otr_number = u.otr_number WHERE r.id = ?");

@@ -8,7 +8,7 @@
     
 </head>
 <body>
-    <!-- Header Section -->
+   
     <header>
         <div class="logo">
         <a href="index.php"><h1>Pateldham </h1></a>
@@ -19,7 +19,7 @@
         </div>
     </header>
 
-    <!-- Main Section -->
+    
     <main>
         <div class="description">
             <h2>Welcome to Pateldham Hostel</h2>

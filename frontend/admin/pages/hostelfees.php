@@ -4,13 +4,9 @@ include '../../../backend/adminhostelfees.php';
 require_once('../../../fpdf186/fpdf.php');
 require_once('../../../tfpdf/tfpdf.php');
 require_once('../../../tFPDF/font/ttfonts.php');
-
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <style>
         th {
@@ -18,8 +14,8 @@ require_once('../../../tFPDF/font/ttfonts.php');
             background-color: #2c91c1;
         }
     </style>
-    <!-- <link rel="stylesheet" href="../CSS/dashboard.css"> -->
-    <link rel="stylesheet" href="../CSS/hostelfees.css">
+    <link rel="stylesheet" href="../CSS/dashboard.css">
+    <!-- <link rel="stylesheet" href="../CSS/hostelfees.css"> -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
@@ -33,34 +29,18 @@ require_once('../../../tFPDF/font/ttfonts.php');
             $('#example').DataTable();
         })
     </script>
+    <script src="../javascript/script.js"></script>
 </head>
 
 <body>
-    <div class="sidebar">
-        <ul class="menu">
-            <li><a href="hostelfees.php">Hostel Fees</a></li>
-            <li><a href="maintainance.php">Maintenance Issue</a></li>
-            <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
-            <li><a href="latestudent.php">Late student History</a></li>
-            <li><a href="room.php">Room Allocation</a></li>
-            <li><a href="roomhistory.php">Room record</a></li>
-            <li><a href="pendingfees.php">Pending fees Students</a></li>
-        </ul>
-    </div>
+<?php include 'admin_sidebar.php'; ?>
 
     <div class="content">
-        <div class="top-bar">
-            <h1><a href="dashboard.php">SDHOSTEL</a></h1>
-            <div class="user">
-                <img src="../photos/Gpay.png" alt="Profile Picture" onclick="toggleDropdown()">
-                <div id="dropdown-menu" class="dropdown">
-                    <a href="logout.php">Logout</a>
-                </div>
-            </div>
-        </div>
+    <?php include 'admin_topbar.php'; ?>
         <div class="main-content">
             <h2>Manage Receipts</h2>
-            <table id="example">
+            
+            <table id="example" border="">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -91,10 +71,10 @@ require_once('../../../tFPDF/font/ttfonts.php');
                                 <td><?php echo ucfirst($row['status']); ?></td>
                                 <td>
                                     <?php if ($row['status'] == 'pending'): ?>
-                                        <form method="POST" style="display:inline;">
+                                        <form method="POST" style="display:inline; background: none; border: none; padding: 0; margin: 0;">
                                             <input type="hidden" name="receipt_id" value="<?php echo $row['id']; ?>">
                                             <button type="submit" name="action" value="approve"
-                                                style="padding: 5px 10px; background-color: green; color: white; border: none; cursor: pointer;">Approve</button>
+                                                style=" padding: 5px 10px; background-color: green; color: white; border: none; cursor: pointer;">Approve</button>
                                             <button type="submit" name="action" value="reject"
                                                 style="padding: 5px 10px; background-color: red; color: white; border: none; cursor: pointer;">Reject</button>
                                         </form>

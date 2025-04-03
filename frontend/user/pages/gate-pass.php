@@ -7,52 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SDHostel - Gate Pass & Leave Request</title>
     <link rel="stylesheet" href="../CSS/gate-pass.css">
+    <link rel="stylesheet" href="../CSS/dashboard.css">
     <style>
      
     </style>
-    <script>
-        function toggleDropdown() {
-            document.getElementById("dropdown").classList.toggle("show");
-        }
-
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(event) {
-            if (!event.target.matches('.user img')) {
-                var dropdowns = document.getElementsByClassName("dropdown");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
-    </script>
+ <script src="../javascript/script.js"></script>
 </head>
 
 <body>
-    <div class="sidebar">
-        <ul class="menu">
-            <li><a href="hostel-fees.php">Hostel Fees</a></li>
-            <li><a href="maintenance-issue.php">Maintenance Issue</a></li>
-            <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
-            <li><a href="gate-pass-status.php">Status</a></li>
-            <li><a href="change-password.php">Change Password</a></li>
-        </ul>
-    </div>
-
+<?php include 'sidebar.php';?>
     <div class="content">
-        <div class="top-bar">
-            <h1><a href="dashboard.php">SDHOSTEL</a></h1>
-            <div class="user">
-                <!-- Profile image -->
-                <img src="photos/Gpay.png" alt="Profile" onclick="toggleDropdown()">
-                <!-- Dropdown menu -->
-                <div id="dropdown" class="dropdown">
-                    <a href="logout.php">Logout</a>
-                </div>
-            </div>
-        </div>
+    <?php include 'topbar.php';?>
 
         <div class="main-content">
             <div class="form-container">

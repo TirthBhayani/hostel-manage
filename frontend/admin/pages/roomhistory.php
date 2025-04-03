@@ -1,113 +1,242 @@
 <?php
-include '../../../backend/adminroomhistrory.php';
+include '../../../backend/dbconnection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Room Allocation</title>
     <link rel="stylesheet" href="../CSS/dashboard.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="../javascript/script.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        .room-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .room-card {
+            width: 200px;
+            height: 180px;
+            background: #f4f4f4;
+            border-radius: 12px;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .room-full {
+            background: #ff4d4d !important;
+            color: white;
+        }
+
+        .room-icon {
+            font-size: 30px;
+            color: #3498db;
+        }
+
+        .room-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .beds {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .bed {
+            font-size: 24px;
+            color: #2ecc71;
+        }
+
+        .bed.empty {
+            color: #ccc;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+            width: 350px;
+            text-align: center;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            color: red;
+        }
+
+        #studentList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #studentList li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .selected-student {
+            background: #3498db !important;
+            color: white;
+        }
+
+        #availableRoomsDropdown {
+            display: none;
+            margin-top: 10px;
+            padding: 8px;
+            width: 100%;
+        }
+
+        #changeRoomBtn {
+            display: none;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<div class="sidebar">
-<ul class="menu">
-            <li><a href="hostelfees.php">Hostel Fees</a></li>
-            <li><a href="maintainance.php">Maintenance Issue</a></li>
-            <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
-            <li><a href="latestudent.php">Late student History</a></li>
-            <li><a href="room.php">Room Allocation</a></li>
-            <li><a href="roomhistory.php">Room record</a></li>
-            <li><a href="pendingfees.php">Pending fees Students</a></li>
-        </ul>
-    </div>
-
-    <div class="content">
-        <div class="top-bar">
-            <h1><a href="dashboard.php">SDHOSTEL</a></h1>
-            <div class="user">
-                
-                <!-- Fixed the missing quote in the src attribute -->
-                <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
-                <div id="dropdown-menu" class="dropdown">
-                    <a href="logout.php">Logout</a>
-                </div>
-            </div>
-        </div>
-        <div class="main-content">
-        <h3>Room Allocation List</h3>
-<table id="roomAllocationTable" class="display">
-    <thead>
-        <tr>
-            <th>Room Number</th>
-            <th>Room ID</th>
-            <th>Student Name</th>
-            <th>OTR Number</th>
-            <th>Allocated At</th>
-        </tr>
-    </thead>
-    <tbody>
+<?php include 'admin_sidebar.php'; ?>
+<div class="content">
+    <?php include 'admin_topbar.php'; ?>
+    <h3>Room Allocation</h3>
+    <div class="room-container">
         <?php
-        $query = "
-            SELECT ra.room_id,ra.room_number, u.firstName AS student_name, u.otr_number, ra.status
-            FROM rooms ra
-            JOIN users u ON ra.room_id = u.room_id
-        ";
+        $query = "SELECT r.room_id, r.room_number, 
+                  (SELECT COUNT(*) FROM users WHERE users.room_id = r.room_id) AS occupied_beds
+                  FROM rooms r";
         $result = $conn->query($query);
         while ($row = $result->fetch_assoc()) {
-            echo "<tr>
-                    <td>{$row['room_number']}</td>
-                    <td>{$row['room_id']}</td>
-                    <td>{$row['student_name']}</td>
-                    <td>{$row['otr_number']}</td>
-                    <td>{$row['status']}</td>
-                  </tr>";
+            $occupiedBeds = $row['occupied_beds'];
+            $isFull = ($occupiedBeds == 4) ? 'room-full' : '';
+
+            echo "<div class='room-card $isFull' data-room='{$row['room_id']}'>
+                    <i class='fas fa-door-open room-icon'></i>
+                    <div class='room-number'>Room {$row['room_number']}</div>
+                    <div class='beds'>
+                        <i class='fas fa-bed bed " . ($occupiedBeds >= 1 ? '' : 'empty') . "'></i>
+                        <i class='fas fa-bed bed " . ($occupiedBeds >= 2 ? '' : 'empty') . "'></i>
+                        <i class='fas fa-bed bed " . ($occupiedBeds >= 3 ? '' : 'empty') . "'></i>
+                        <i class='fas fa-bed bed " . ($occupiedBeds >= 4 ? '' : 'empty') . "'></i>
+                    </div>
+                  </div>";
         }
         ?>
-    </tbody>
-</table>
-
     </div>
-    
-    <script>
-        $(document).ready(function () {
-            $('#userTable').DataTable();
 
-            $('#allocate-btn').on('click', function () {
-                const user_id = $('#user').val();
-                const room_id = $('#room').val();
-
-                if (!user_id || !room_id) {
-                    $('#message').text('Please select both user and room').css('color', 'red');
-                    return;
-                }
-
-                $.ajax({
-                    url: 'room.php',
-                    type: 'POST',
-                    data: { allocate: true, user_id: user_id, room_id: room_id },
-                    success: function (response) {
-                        const res = JSON.parse(response);
-                        if (res.status === 'success') {
-                            $('#message').text(res.message).css('color', 'green');
-                            setTimeout(() => location.reload(), 1000);
-                        } else {
-                            $('#message').text(res.message).css('color', 'red');
-                        }
-                    },
-                    error: function () {
-                        $('#message').text('An error occurred').css('color', 'red');
-                    }
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+    <div id="roomModal" class="modal">
+        <span class="close"><i class="fas fa-times"></i></span>
+        <h3>Students in Room <span id="roomNumber"></span></h3>
+        <div class="modal-content">
+            <ul id="studentList"></ul>
+            <select id="availableRoomsDropdown"></select>
+            <button id="changeRoomBtn">Change Room</button>
         </div>
+    </div>
+</div>
+
+<script>
+   $(document).ready(function () {
+    let selectedStudent = null;
+
+    $(".room-card").on("click", function () {
+        let room_id = $(this).data("room");
+
+        $.ajax({
+            url: "fetch_students.php",
+            type: "POST",
+            data: { room_id: room_id },
+            success: function (response) {
+                $("#studentList").html(response);
+                $("#roomModal").show();
+                $("#roomNumber").text(room_id);
+            }
+        });
+    });
+
+    $("#studentList").on("click", "li", function () {
+        $("#studentList li").removeClass("selected-student");
+        $(this).addClass("selected-student");
+        selectedStudent = $(this).data("student-id");
+
+        $.ajax({
+            url: "fetch_available_rooms.php",
+            type: "GET",
+            success: function (response) {
+                let rooms = JSON.parse(response);
+                let dropdown = $("#availableRoomsDropdown");
+                dropdown.html('<option value="">Select a room</option>');
+
+                rooms.forEach(room => {
+                    dropdown.append(`<option value="${room.room_id}">Room ${room.room_number}</option>`);
+                });
+
+                dropdown.show();
+                $("#changeRoomBtn").show();
+            }
+        });
+    });
+
+    $("#changeRoomBtn").on("click", function () {
+        let newRoomId = $("#availableRoomsDropdown").val();
+        if (!newRoomId) {
+            alert("Please select a room first.");
+            return;
+        }
+
+        console.log("Changing room for student:", selectedStudent, "to room:", newRoomId);
+
+        $.ajax({
+            url: "change_room.php",
+            type: "POST",
+            data: { student_id: selectedStudent, new_room_id: newRoomId },
+            success: function (response) {
+                let res = JSON.parse(response);
+                alert(res.message);
+                if (res.status === "success") location.reload();
+            }
+        });
+    });
+
+    $(".close").on("click", function () {
+        $("#roomModal").hide();
+        selectedStudent = null;
+        $("#availableRoomsDropdown").hide();
+        $("#changeRoomBtn").hide();
+    });
+});
+
+</script>
 </body>
 </html>

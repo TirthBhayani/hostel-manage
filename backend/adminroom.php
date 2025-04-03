@@ -1,6 +1,10 @@
 <?php
 include 'dbconnection.php';
-
+session_start();
+if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== 1 || $_SESSION['role'] !== 'admin') {
+    header('Location: ../../../frontend/user/pages/login.php');
+    exit();
+}
 // Fetch available students without a room
 $studentsQuery = "SELECT id, firstName, otr_number FROM users WHERE room_id IS NULL";
 $students = $conn->query($studentsQuery);

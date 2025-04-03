@@ -114,13 +114,58 @@ th{
     width: 100%;
     margin-top: 20px;
 }
+.toggle-btn {
+    background-color: #2c91c1;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-right: 10px;
+}
 
+.toggle-btn:hover {
+    background-color: #1a5a7a;
+}
+
+    .sidebar.hidden {
+    transform: translateX(-100%); /* Hide sidebar */
+    }
+    
+
+    /* Content adjusts when the sidebar is hidden */
+    .content.full-width {
+    margin-left: 0;
+    }
+    
+    /* Button for sidebar toggle */
+ 
 /* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
         height: auto;
         position: relative;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+
+    .sidebar.hidden {
+        transform: translateX(-100%);
     }
 
     .content {

@@ -2,8 +2,6 @@
 session_start(); // Start the session
 include '../dbconnection.php';
 
-
-
 // Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
@@ -12,21 +10,33 @@ if ($conn->connect_error) {
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['issue'])) {
     $issue = $_POST['issue'];
+    $issue_type = $_POST['issue_type']; // Get selected issue type
     $otr_number = $_SESSION['otr_number']; // Assuming OTR number is stored in session
+    $image_path = NULL; // Default no image
 
-    // Prepare and bind
-    $stmt = $conn->prepare("INSERT INTO maintenance_issues (otr_number, issue) VALUES (?, ?)");
-    $stmt->bind_param("ss", $otr_number, $issue);
+    // Handle image upload if provided
+    if (!empty($_FILES['issue_image']['name'])) {
+        $target_dir = "../../../hm/uploads/issues/";
+        $image_name = basename($_FILES["issue_image"]["name"]);
+        $target_file = $target_dir . time() . "_" . $image_name; // Unique filename
+
+        // Move uploaded file to server
+        if (move_uploaded_file($_FILES["issue_image"]["tmp_name"], $target_file)) {
+            $image_path = "hm/uploads/issues/" . time() . "_" . $image_name; // Store relative path
+        }
+    }
+
+    // Prepare and bind SQL
+    $stmt = $conn->prepare("INSERT INTO maintenance_issues (otr_number, issue, issue_type, image_path) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $otr_number, $issue, $issue_type, $image_path);
 
     // Execute the query
     if ($stmt->execute()) {
-        // Successful submission
         echo "<script>
                 alert('Maintenance issue submitted successfully.');
-                window.location.href = '../../frontend/user/pages/maintenance-issue.php'; // Redirect to maintenance-issue.php
+                window.location.href = '../../frontend/user/pages/maintenance-issue.php'; 
               </script>";
     } else {
-        // Error occurred
         echo "<script>
                 alert('Error: " . addslashes($stmt->error) . "');
               </script>";

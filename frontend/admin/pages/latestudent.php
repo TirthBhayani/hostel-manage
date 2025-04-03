@@ -1,5 +1,7 @@
 <?php
-include '../../../backend/adminlatestudent.php'
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include '../../../backend/adminlatestudent.php';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,78 +9,99 @@ include '../../../backend/adminlatestudent.php'
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SDHostel</title>
+    <title>Late Student Report</title>
     <link rel="stylesheet" href="../CSS/dashboard.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
     <script>
-        $(document).ready(function(){
-            $('#example').DataTable();
-        })
+        $(document).ready(function () {
+    $('#example').DataTable();
+
+    // Fetch data when filter button is clicked
+    $('#filter-btn').click(function () {
+        var startDate = $('#start-date').val();
+        var endDate = $('#end-date').val();
+
+        $.ajax({
+            url: '../../../backend/adminlatestudent.php',
+            type: 'POST',
+            data: { start_date: startDate, end_date: endDate },
+            success: function (response) {
+                $('#report-table').html(response);
+            }
+        });
+    });
+
+    // Download PDF using Form Submission
+    $('#download-pdf').click(function () {
+        var startDate = $('#start-date').val();
+        var endDate = $('#end-date').val();
+
+        if (startDate === '' || endDate === '') {
+            alert("Please select start and end dates.");
+            return;
+        }
+
+        // Create a form dynamically
+        var form = $('<form action="../../../backend/adminlatestudent.php" method="post" target="_blank">');
+        form.append($('<input type="hidden" name="start_date">').val(startDate));
+        form.append($('<input type="hidden" name="end_date">').val(endDate));
+        form.append($('<input type="hidden" name="generate_pdf">').val(1));
+
+        $('body').append(form);
+        form.submit();
+        form.remove(); // Remove form after submission
+    });
+});
+
     </script>
-   
 </head>
 
 <body>
-    <div class="sidebar">
-    <ul class="menu">
-            <li><a href="hostelfees.php">Hostel Fees</a></li>
-            <li><a href="maintainance.php">Maintenance Issue</a></li>
-            <li><a href="gate-pass.php">Gate Pass & Leave</a></li>
-            <li><a href="latestudent.php">Late student History</a></li>
-            <li><a href="room.php">Room Allocation</a></li>
-            <li><a href="roomhistory.php">Room record</a></li>
-            <li><a href="pendingfees.php">Pending fees Students</a></li>
-        </ul>
-    </div>
+<?php include 'admin_sidebar.php'; ?>
+<div class="content">
+    <?php include 'admin_topbar.php'; ?>
 
-    <div class="content">
-        <div class="top-bar">
-            <h1><a href="dashboard.php">SDHOSTEL</a></h1>
-            <div class="user">
-                <img src="../photos/Gpay.png" alt="Profile Picture" class="profile-pic" onclick="toggleDropdown()">
-                <div id="dropdown-menu" class="dropdown">
-                    <a href="logout.php">Logout</a>
-                </div>
-            </div>
+    <div class="main-content">
+        <h2>Late Student History</h2>
+
+        <!-- Date Filter Section -->
+         
+        <div class="filter-section">
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start_date">
+            
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end_date">
+
+            <button id="filter-btn" class="btn btn-primary">Generate Report</button>
+            <button id="download-pdf" class="btn btn-danger">Download PDF</button>
         </div>
 
-        <div class="main-content">
-            <h2>Late Student History</h2>
-
-            <?php if (!empty($late_students)): ?>
-                <table id="example" class="table">
-                    <thead>
-                        <tr>
-                            <th>OTR Number</th>
-                            <th>Name</th>
-                            <th>Check-out_date</th>
-                            <th>Check_out_time</th>
-                            <th>Check_in_date</th> <th>check_in_time</th>
-                            <th>Late Entry</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($late_students as $student): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($student['otr_number']); ?></td>
-                                <td><?php echo htmlspecialchars($student['name']); ?></td>
-                                <td><?php echo htmlspecialchars($student['check_out_date']); ?></td>
-                                <td><?php echo htmlspecialchars($student['check_out_time']); ?></td>
-                                <td><?php echo htmlspecialchars($student['check_in_date']); ?></td>
-                                <td><?php echo htmlspecialchars($student['check_in_time']); ?></td>
-                                <td>Yes</td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p>No late students found.</p>
-            <?php endif; ?>
-        </div>
+        <!-- Data Table -->
+        <table id="example" class="table">
+            <thead>
+                <tr>
+                    <th>OTR Number</th>
+                    <th>Name</th>
+                    <th>Check-out Date</th>
+                    <th>Check-out Time</th>
+                    <th>Check-in Date</th>
+                    <th>Check-in Time</th>
+                    <th>Late Entry</th>
+                </tr>
+            </thead>
+            <tbody id="report-table">
+                <tr>
+                    <td colspan="7" class="text-center">Select a date range to generate a report.</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <script src="../javascript/script.js"></script>
+</div>
+
+<script src="../javascript/script.js"></script>
 </body>
 
 </html>

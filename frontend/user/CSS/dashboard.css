@@ -180,7 +180,7 @@ td {
     justify-content: center;
     margin-left: 350px;
     /* margin-top: 50px; */
-} */
+/* } */ */
 #loading-screen {
 position: fixed;
 top: 0;
@@ -285,13 +285,13 @@ h1, h2 {
     color: #2c91c1;
 }
 
-form {
+/* form {
     margin-bottom: 30px;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+} */
 
 form label {
     margin-right: 10px;

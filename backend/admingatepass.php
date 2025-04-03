@@ -3,7 +3,7 @@ include 'dbconnection.php';
 // Start the session
 session_start();
 if (!isset($_SESSION['loggedIn']) || $_SESSION['loggedIn'] !== 1 || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
+    header('Location: ../../../frontend/user/pages/login.php');
     exit();
 }
 
