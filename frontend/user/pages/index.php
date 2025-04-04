@@ -1,118 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pateldham Hostel Management</title>
-    <link rel="stylesheet" href="../CSS/index.css">
-    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pateldham Hostel Management</title>
+  <link rel="stylesheet" href="../CSS/index.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-   
-    <header>
-        <div class="logo">
-        <a href="index.php"><h1>Pateldham </h1></a>
-        </div>
-        <div class="auth-buttons">
-            <a href="login.php" class="btn">Login</a>
-            <a href="register.php" class="btn">Sign Up</a>
-        </div>
-    </header>
+  <header>
+    <div class="logo">
+      <a href="index.php"><h1>Pateldham</h1></a>
+    </div>
+    <div class="auth-buttons">
+      <a href="login.php" class="btn">Login</a>
+      <a href="register.php" class="btn">Sign Up</a>
+    </div>
+  </header>
 
-    
-    <main>
-        <div class="description">
-            <h2>Welcome to Pateldham Hostel</h2>
-            <p>We offer the best accommodation for students with all essential amenities to make your stay comfortable and enjoyable.</p>
-        </div>
-        <div class="slideshow-container">
+  <main>
+    <div class="description card">
+      <h2>Welcome to Pateldham Hostel</h2>
+      <p>Providing quality accommodation and a homely environment for students. Experience comfort, security, and convenience in one place.</p>
+    </div>
 
-            <!-- Full-width images with number and caption text -->
-            <div class="mySlides fade">
-                <div class="numbertext">1 / 5</div>
-                <img src="../../../photos/image1.png" style="width:100%">
-                <div class="text">Caption Text</div>
-            </div>
+    <div class="slideshow-container card">
+      <div class="mySlides fade">
+        <!-- <div class="numbertext">1 / 5</div> -->
+        <img src="../../../photos/image11.jpeg" style="width:100%" />
+        <div class="text"> </div>
+      </div>
 
-            <div class="mySlides fade">
-                <div class="numbertext">2 / 5</div>
-                <img src="../../../photos/image2.jpeg" style="width:100%">
-                <div class="text">Caption Two</div>
-            </div>
+      <div class="mySlides fade">
+        <!-- <div class="numbertext">2 / 5</div> -->
+        <img src="../../../photos/image22.jpg" style="width:100%" />
+        <div class="text"></div>
+      </div>
 
-            <div class="mySlides fade">
-                <div class="numbertext">3 / 5</div>
-                <img src="../../../photos/image3.jpeg" style="width:100%">
-                <div class="text">Caption Three</div>
-            </div>
+      <div class="mySlides fade">
+        <!-- <div class="numbertext">3 / 5</div> -->
+        <img src="../../../photos/image33.jpg" style="width:100%" />
+        <div class="text"></div>
+      </div>
 
-            <div class="mySlides fade">
-                <div class="numbertext">4 / 5</div>
-                <img src="../../../photos/image4.jpeg" style="width:100%">
-                <div class="text">Caption Four</div>
-            </div>
+      <div class="mySlides fade">
+        <!-- <div class="numbertext">4 / 5</div> -->
+        <img src="../../../photos/image44.jpg" style="width:100%" />
+        <div class="text"></div>
+      </div>
 
-            <div class="mySlides fade">
-                <div class="numbertext">5 / 5</div>
-                <img src="../../../photos/image5.jpeg" style="width:100%">
-                <div class="text">Caption Five</div>
-            </div>
+      <div class="mySlides fade">
+        <!-- <div class="numbertext">5 / 5</div> -->
+        <img src="../../../photos/image55.jpg" style="width:100%" />
+        <!-- <div class="text"></div> -->
+      </div>
 
-            <!-- Next and previous buttons -->
-            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-            <a class="next" onclick="plusSlides(1)">&#10095;</a>
-        </div>
-        <br>
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
 
-        <!-- The dots/circles -->
-        <div style="text-align:center">
-            <span class="dot" onclick="currentSlide(1)"></span>
-            <span class="dot" onclick="currentSlide(2)"></span>
-            <span class="dot" onclick="currentSlide(3)"></span>
-            <span class="dot" onclick="currentSlide(4)"></span>
-            <span class="dot" onclick="currentSlide(5)"></span>
-        </div>
-    </main>
+    <div class="dots">
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot" onclick="currentSlide(3)"></span>
+      <span class="dot" onclick="currentSlide(4)"></span>
+      <span class="dot" onclick="currentSlide(5)"></span>
+    </div>
+  </main>
 
- 
-    <footer>
-        <p>© 2024 Pateldham Hostel Management. All rights reserved.</p>
-    </footer>
+  <footer>
+    <p>© 2025 Pateldham Hostel Management. All rights reserved.</p>
+    <p>Maintain By TirthBhayani</p>
+  </footer>
 
-    <script>
-        let slideIndex = 1;
-        showSlides(slideIndex);
+  <script>
+    let slideIndex = 1;
+    showSlides(slideIndex);
 
-        function showSlides(n) {
-            let i;
-            let slides = document.getElementsByClassName("mySlides");
-            let dots = document.getElementsByClassName("dot");
+    function plusSlides(n) {
+      showSlides(slideIndex += n);
+    }
 
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";  
-            }
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
 
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active", "");
-            }
+    function showSlides(n) {
+      let i;
+      let slides = document.getElementsByClassName("mySlides");
+      let dots = document.getElementsByClassName("dot");
+      if (n > slides.length) { slideIndex = 1 }
+      if (n < 1) { slideIndex = slides.length }
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      for (i = 0; i < dots.length; i++) {
+        dots[i].className = dots[i].className.replace(" active", "");
+      }
+      slides[slideIndex - 1].style.display = "block";
+      dots[slideIndex - 1].className += " active";
+    }
 
-            if (n > slides.length) {slideIndex = 1}
-            if (n < 1) {slideIndex = slides.length}
-            slides[slideIndex - 1].style.display = "block";  
-            dots[slideIndex - 1].className += " active";
-        }
-
-        function plusSlides(n) {
-            showSlides(slideIndex += n);
-        }
-
-        function currentSlide(n) {
-            showSlides(slideIndex = n);
-        }
-
-        setInterval(() => {
-            showSlides(slideIndex += 1);
-        }, 2000);
-    </script>
+    setInterval(() => {
+      plusSlides(1);
+    }, 4000);
+  </script>
 </body>
 </html>

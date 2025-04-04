@@ -50,6 +50,9 @@ if (isset($_POST['submit'])) {
                     $_SESSION['email'] = $email;
                     $_SESSION['loggedIn'] = 1;
                     $_SESSION['otr_number'] = $data['otr_number'];
+                    
+
+                    
                     header('Location: ../../user/pages/dashboard.php'); // Redirect to the dashboard
                     exit();
                 }
